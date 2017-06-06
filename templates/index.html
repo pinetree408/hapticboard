@@ -1,0 +1,166 @@
+{% extends "layout.html" %}
+
+{% block body %}
+  <h2>write the following sentences</h2>
+  <p id="test-sentence"></p>
+  <div class="form-group">
+    <textarea class="form-control" id="comment" rows="5"></textarea>
+  </div>
+  <div id="player"></div>
+{% endblock %}
+
+{% block script %}
+  <script src="{{ url_for('static', filename='js/mackenzie.js')}}"></script>
+  <script>
+    var testsetIndex = 0;
+    var testsetText = '';
+    $( '#test-sentence' ).text(mackenzies[testsetIndex]);
+    $( "#comment" ).keyup(function( event ) {
+      if (event.keyCode == 13){
+        testsetIndex++;
+        var testsetText = '';
+        if (capsLockOn == 0) {
+          testsetText = mackenzies[testsetIndex];
+        } else {
+          testsetText = mackenzies[testsetIndex].toUpperCase();
+        }
+        $( '#test-sentence' ).text(testsetText);
+        $( '#comment' ).val('');    
+      }
+    }); 
+  </script>
+  <script>
+      // 2. This code loads the IFrame Player API code asynchronously.
+      var tag = document.createElement('script');
+
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '300',
+          width: '500',
+          videoId: 'TS-G4UQTfUo',
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+      }
+
+      // 4. The API will call this function when the video player is ready.
+      function onPlayerReady(event) {
+        event.target.playVideo();
+      }
+
+      // 5. The API calls this function when the player's state changes.
+      //    The function indicates that when playing a video (state=1),
+      //    the player should play for six seconds and then stop.
+      var done = false;
+      function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.PLAYING && !done) {
+          setTimeout(stopVideo, 6000);
+          done = true;
+        }
+      }
+      function stopVideo() {
+        player.stopVideo();
+      }
+
+    var schedule = [51, 53, 56];
+    var updateCheck = 0;
+    var bankAccount = 0;
+    var bankPassword = [49, 50, 51, 52];
+    var bankTempPassword = [];
+    var volumeSize = 1000;
+
+    $(document).keydown(function( event ) {
+      console.log(event.keyCode);
+      var data = {'input' : '0'}
+      if (event.keyCode == 20) {
+        data['input'] = '9'
+        //alert("Capslock on");      
+      }
+      if (event.ctrlKey && event.keyCode == 70) {
+        data['input'] = '1'
+	//alert("New article");
+      }
+      if (bankAccount == 0 && event.ctrlKey && !$("input,textarea").is(":focus") && schedule.includes(event.keyCode)) {
+        data['input'] = '1'
+        //alert("schedule");
+      }
+      if (event.ctrlKey && event.keyCode == 85) {
+        updateCheck = 1; 
+        data['input'] = '1'
+        //alert("New updates");
+      }
+      if (updateCheck == 1 && event.keyCode == 89) {
+        updateCheck = 0;
+        data['input'] = '1'
+        //alert("Start update");
+      }
+      if (updateCheck == 1 && event.keyCode == 78) {
+        updateCheck = 0;
+        data['input'] = '2'
+        //alert("Cancle update");
+      }
+      if (event.ctrlKey && event.keyCode == 66) {
+        bankAccount = 1;
+      }
+      if (bankAccount == 1 && !(event.keyCode == 66) && !(bankTempPassword.length == 4)) {
+        bankTempPassword.push(event.keyCode);
+      }
+      if (bankAccount == 1 && bankTempPassword.length == 4) {
+        bankAccount = 0;
+        if (bankPassword.toString() == bankTempPassword.toString()) {
+          data['input'] = '1'
+          //alert("New budget");
+        } else {
+          data['input'] = '2'
+          //alert("Wrong Password");
+        }
+        bankTempPassword = [];
+      }
+      if (event.keyCode == 38) {
+        data['input'] = 1080;
+        volumeSize += 10;
+        if (volumeSize > 1100) {
+          player.setVolume(100);
+        }
+        player.setVolume(volumeSize - 1000);
+        //alert("Volume up");      
+      }
+      if (event.keyCode == 40) {
+	if (volumeSize < 1000) {
+	  volumeSize = 1000;
+	}
+        data['input'] = 1000;
+	volumeSize -= 10;
+	if (volumeSize < 1000) {
+	  volumeSize = 1000;
+	}
+        if (volumeSize < 1000) {
+          player.setVolume(0);
+        }
+        player.setVolume(volumeSize - 1000);
+        //alert("Volume up");      
+      }
+      $.ajax({
+        type: 'POST',
+	url: '/connect',
+        dataType : 'json',
+	data: JSON.stringify(data),
+        contentType: "application/json; charset=utf-8"
+      });
+    });
+  </script>
+  <script>
+    function start_r() {
+      macro();
+    }
+  </script>
+{% endblock %}

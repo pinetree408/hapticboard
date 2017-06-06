@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+  <head>
+    <title>HapticBoard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- jquery -->
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <!-- style -->
+    <style>
+      .jumbotron {
+        margin-top: 10px;
+      }
+    </style>
+
+  </head>
+  <body>
+    <div class="container">
+      <div class="jumbotron">
+        {% block body %}{% endblock %}
+      </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/testSet.js')}}"></script>
+    <script>
+      var index = -1;
+      var capsLockOn = 0;
+      function kakao() {
+        var data = {'input' : '1'}
+        $.ajax({
+          type: 'POST',
+	  url: '/connect',
+          dataType : 'json',
+	  data: JSON.stringify(data),
+          contentType: "application/json; charset=utf-8"
+        });
+        //alert("New kakao message");      
+      }
+      function a() {
+        if (index == 5) {
+          setTimeout(kakao, 10000);
+	}
+        if (index == 0){
+          if (capsLockOn == 0) {
+            capsLockOn = 1;
+	  } else {
+            capsLockOn = 0;
+          }
+        }
+        alert(testSet[index]);
+      };
+      function start() {
+        setTimeout(a, 50000);
+        setTimeout(a, 100000);
+      };
+      function macro() {
+        index++;
+        start();
+        setTimeout(macro, 100000);
+      };
+      macro(); 
+    </script>
+    {% block script %}{% endblock %}
+  </body>
+</html>
+
